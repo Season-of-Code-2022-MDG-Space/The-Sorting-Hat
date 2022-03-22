@@ -40,7 +40,7 @@
 
   function authenticate() {
     return gapi.auth2.getAuthInstance()
-        .signIn({scope: " https://www.googleapis.com/auth/gmail.settings.basic https://mail.google.com/ https://www.googleapis.com/auth/gmail.labels  https://www.googleapis.com/auth/gmail.modify" })
+        .signIn({scope: " https://www.googleapis.com/auth/gmail.settings.basic https://mail.google.com/ https://www.googleapis.com/auth/gmail.labels  https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly" })
         .then(function() { console.log("Sign-in successful"); },
               function(err) { console.error("Error signing in", err); });
   }
@@ -51,13 +51,40 @@
               function(err) { console.error("Error loading GAPI client for API", err); });
   }
   // Make sure the client is loaded and sign-in is complete before calling this method.
+  function getLabel(){
+    var name1=document.getElementById("labelname").value;
+    return name1;
+  }
+  function getKey(){
+    var key1=document.getElementById("keyword").value;
+    return key1;
+  }
+  function callId(){
+    var request = gapi.client.gmail.users.labels.list({userId:'me'});
+    return request;
+  }
+
+  function getId() {
+    var nm=getLabel();
+  var request=callId();
+  var l=0;
+  for(l=0;;l++){
+    if(request.label[l].name==nm){
+      return request.label[l].id;
+    }
+  }
+  return "";
+  }
+            
+
   function execute1() {
+    var name=getLabel();
     return gapi.client.gmail.users.labels.create({
       "userId": "me",
       "resource": {
         "labelListVisibility": "labelShow",
         "messageListVisibility": "show",
-        "name": "test8"
+        "name": name
       }
     })
         .then(function(response) {
@@ -67,16 +94,19 @@
               function(err) { console.error("Execute error", err); });
   }
   function execute2() {
+
+    var id=getId();
+    var key= getKey();
     return gapi.client.gmail.users.settings.filters.create({
       "userId": "me",
       "resource": {
         "criteria": {
-          "query": "niice"
+          "query": key
         },
         "id": "",
         "action": {
           "addLabelIds": [
-            "Label_12"
+            id
           ]
         }
       }
@@ -87,13 +117,12 @@
               },
               function(err) { console.error("Execute error", err); });
   }
+  
   gapi.load("client:auth2", function() {
     gapi.auth2.init({client_id: "846181891405-u8i9rc5190u20upsvjhrjsim7temm1pj.apps.googleusercontent.com"});
   });
 </script>
-<button onclick="authenticate().then(loadClient)">authorize and load</button>
-<button onclick="execute1()">execute</button>
-<button onclick="execute2()">create filter</button>
-
+<button onclick="authenticate().then(loadClient());">GET STARTED</button>
+<button onclick="execute1().then(execute2());">CREATE</button>
     
 </html>
