@@ -40,7 +40,7 @@
 
   function authenticate() {
     return gapi.auth2.getAuthInstance()
-        .signIn({scope: "https://mail.google.com/ https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.modify"})
+        .signIn({scope: " https://www.googleapis.com/auth/gmail.settings.basic https://mail.google.com/ https://www.googleapis.com/auth/gmail.labels  https://www.googleapis.com/auth/gmail.modify" })
         .then(function() { console.log("Sign-in successful"); },
               function(err) { console.error("Error signing in", err); });
   }
@@ -51,13 +51,34 @@
               function(err) { console.error("Error loading GAPI client for API", err); });
   }
   // Make sure the client is loaded and sign-in is complete before calling this method.
-  function execute() {
+  function execute1() {
     return gapi.client.gmail.users.labels.create({
-      "userId": "RudraPrataps7789@gmail.com",
+      "userId": "me",
       "resource": {
         "labelListVisibility": "labelShow",
         "messageListVisibility": "show",
         "name": "test8"
+      }
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+  function execute2() {
+    return gapi.client.gmail.users.settings.filters.create({
+      "userId": "me",
+      "resource": {
+        "criteria": {
+          "query": "niice"
+        },
+        "id": "",
+        "action": {
+          "addLabelIds": [
+            "Label_12"
+          ]
+        }
       }
     })
         .then(function(response) {
@@ -71,7 +92,8 @@
   });
 </script>
 <button onclick="authenticate().then(loadClient)">authorize and load</button>
-<button onclick="execute()">execute</button>
+<button onclick="execute1()">execute</button>
+<button onclick="execute2()">create filter</button>
 
     
 </html>
