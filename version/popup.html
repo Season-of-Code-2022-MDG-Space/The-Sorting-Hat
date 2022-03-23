@@ -22,9 +22,6 @@
           alert(document.getElementById ("labelname").value);
           }
           </script>
-        <div class="container">
-            <p aligh="centre">
-            <button class="btn-1" onclick="press()">Create!</button>
             
             </p>
         <p>
@@ -64,7 +61,7 @@
     return request;
   }
 
-  function getId() {
+ /* function getId() {
     var nm=getLabel();
   var request=callId();
   var l=0;
@@ -75,6 +72,7 @@
   }
   return "";
   }
+  */
             
 
   function execute1() {
@@ -95,7 +93,7 @@
   }
   function execute2() {
 
-    var id=getId();
+
     var key= getKey();
     return gapi.client.gmail.users.settings.filters.create({
       "userId": "me",
@@ -105,9 +103,7 @@
         },
         "id": "",
         "action": {
-          "addLabelIds": [
-            id
-          ]
+          "addLabelIds":"Label_13"
         }
       }
     })
@@ -122,7 +118,8 @@
     gapi.auth2.init({client_id: "846181891405-u8i9rc5190u20upsvjhrjsim7temm1pj.apps.googleusercontent.com"});
   });
 </script>
-<button onclick="authenticate().then(loadClient());">GET STARTED</button>
-<button onclick="execute1().then(execute2());">CREATE</button>
-    
+<button class="btn-3" onclick="authenticate().then(loadClient());">GET STARTED</button>
+<button class="btn-4" onclick="execute1().then(execute2())">CREATE</button>
+   
+
 </html>
