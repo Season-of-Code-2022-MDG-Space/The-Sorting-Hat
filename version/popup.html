@@ -60,21 +60,23 @@
   }
   function callId(){
     var request = gapi.client.gmail.users.labels.list({userId:'me'});
+    console.log(request)
     return request;
   }
 
- /* function getId() {
+  function getId() {
     var nm=getLabel();
   var request=callId();
   var l=0;
   for(l=0;;l++){
-    if(request.label[l].name==nm){
+    var lb=request[l].name;
+    if(lb==nm){
       return request.label[l].id;
     }
   }
   return "";
   }
-  */
+  
             
 
   function execute1() {
@@ -95,7 +97,7 @@
   }
   function execute2() {
 
-
+   var id=getId();
     var key= getKey();
     return gapi.client.gmail.users.settings.filters.create({
       "userId": "me",
@@ -103,9 +105,9 @@
         "criteria": {
           "query": key
         },
-        "id": "",
+        "id": id,
         "action": {
-          "addLabelIds":"Label_13"
+          "addLabelIds": "ID=="
         }
       }
     })
