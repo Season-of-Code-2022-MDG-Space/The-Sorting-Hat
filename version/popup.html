@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+
+        <link rel="stylesheet" href="style.css">
+
+    <p style="color:white"> THE SORTING HAT</p> 
+    </head>
+    <body>
+      <script>
+       function authenticate() {
+    return gapi.auth2.getAuthInstance()
+        .signIn({scope: " https://www.googleapis.com/auth/gmail.settings.basic https://mail.google.com/ https://www.googleapis.com/auth/gmail.labels  https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly" })
+        .then(function() { console.log("Sign-in successful"); },
+              function(err) { console.error("Error signing in", err); });
+  }
+  function loadClient() {
+    gapi.client.setApiKey("AIzaSyBFAJaJbphhxtA7WRJmb4FZ8iL7V1gK4Q8");
+    return gapi.client.load("https://gmail.googleapis.com/$discovery/rest?version=v1")
+        .then(function() { console.log("GAPI client loaded for API"); },
+              function(err) { console.error("Error loading GAPI client for API", err); });
+  } 
+      </script>
+      <button class="btn-3" onclick="authenticate().then(loadClient());">GET STARTED</button>
+        <p style="color:white">Enter the keyword to create the label</p>
+        <form>
+            <input id="keyword" type="text">
+            
+        </form>
+        <p style="color:white">What do you want the label to be named?</p>
+        <form>
+            <input id="labelname" type="text">
+        </form>
+        <script >
+          function press(){
+          alert(document.getElementById ("labelname").value);
+          }
+          </script>
+            
+            </p>
+        <p>
+          <a href="https://calendar.google.com/calendar/u/0/r?tab=rc&pli=1">
+            <button class="btn2" Google Calendar></button>
+          </a>
+          
+        
+    </body>
+    <script src="https://apis.google.com/js/api.js"></script>
+<script>
+ 
+  // Make sure the client is loaded and sign-in is complete before calling this method.
+  function getLabel(){
+    var name1=document.getElementById("labelname").value;
+    return name1;
+  }
+  function getKey(){
+    var key1=document.getElementById("keyword").value;
+    return key1;
+  }
+  function callId(){
+    var request = gapi.client.gmail.users.labels.list({userId:'me'});
+    console.log(request)
+    return request;
+  }
+
+  function getId() {
+    var nm=getLabel();
+  var request=callId();
+  var l=0;
+  for(l=0;;l++){
+    var lb=request[l].name;
+    if(lb==nm){
+      return request.label[l].id;
+    }
+  }
+  return "";
+  }
+  
+            
+
+  function execute1() {
+    var name=getLabel();
+    return gapi.client.gmail.users.labels.create({
+      "userId": "me",
+      "resource": {
+        "labelListVisibility": "labelShow",
+        "messageListVisibility": "show",
+        "name": name
+      }
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+  function execute2() {
+
+   var id=getId();
+    var key= getKey();
+    return gapi.client.gmail.users.settings.filters.create({
+      "userId": "me",
+      "resource": {
+        "criteria": {
+          "query": key
+        },
+        "id": id,
+        "action": {
+          "addLabelIds": "ID=="
+        }
+      }
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+  
+  gapi.load("client:auth2", function() {
+    gapi.auth2.init({client_id: "846181891405-u8i9rc5190u20upsvjhrjsim7temm1pj.apps.googleusercontent.com"});
+  });
+</script>
+<button class="btn-4" onclick="execute1().then(execute2())">CREATE</button>
+   
+</html>
